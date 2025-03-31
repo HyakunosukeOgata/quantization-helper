@@ -4,7 +4,8 @@ import argparse
 import os
 import sys
 import torch
-from torchvision.models import resnet18
+from torchvision.models import resnet18, ResNet18_Weights
+
 
 # 👉 Add project root to sys.path to allow correct import of quantizer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -31,7 +32,8 @@ def main():
     args = parser.parse_args()
 
     print("Loading pretrained resnet18 model...")
-    model = resnet18(pretrained=True)
+    weights = ResNet18_Weights.DEFAULT
+    model = resnet18(weights=weights)
 
     print("Calculating original model size...")
     original_size = get_model_size(model)
