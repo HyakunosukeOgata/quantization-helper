@@ -47,6 +47,13 @@ Prediction (FP32): 285
 Prediction (INT8): 285
 ```
 
+Accuracy Report (ImageNet Mini)
+```
+FP32 Accuracy: 0.7031
+INT8 Accuracy: 0.7028
+Accuracy Drop: 0.0003
+```
+
 Project Structure
 ```
 quantizer/
