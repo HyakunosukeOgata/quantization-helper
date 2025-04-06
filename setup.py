@@ -10,6 +10,6 @@ setup(
         "Pillow>=9.0.0",
         "pytest>=7.0.0"
     ],
-    author="你的名字",
+    author="Ogata.shih",
     description="A simple CLI tool for PyTorch model quantization.",
 )
