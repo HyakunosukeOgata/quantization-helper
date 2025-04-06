@@ -59,6 +59,66 @@ INT8 Accuracy: 0.7028
 Accuracy Drop: 0.0003
 ```
 
+## Quantization Experiment Results
+
+We compared model size, inference speed, and prediction accuracy using ResNet-18 under different quantization strategies.
+
+### Environment
+
+- PyTorch 2.x
+- torchvision 0.15+
+- CPU-only inference
+- Calibration set: ImageNet Mini (10 classes × 50 images)
+
+
+---
+
+### Model Size
+
+| Model Type | Size (MB) | Compression Ratio |
+|------------|-----------|-------------------|
+| FP32       | 46.84     | 100%              |
+| Dynamic    | 45.30     | 96.7%             |
+| Static     | 11.85     | 25.3%             |
+
+---
+
+### Inference Speed (avg on CPU)
+
+| Model Type | Time per Image (sec) | Speed-up |
+|------------|----------------------|----------|
+| FP32       | 0.020785             | 1.00×    |
+| Dynamic    | 0.020783             | 1.00×    |
+| Static     | TBD                  | TBD      |
+
+---
+
+### Prediction Consistency (Top-1 Class)
+
+- FP32 → 🐱 Class ID `285` (Tabby Cat)
+- INT8 (Dynamic) → ✅ Same
+- INT8 (Static) → ✅ Same
+
+---
+
+### Top-1 Accuracy (ImageNet Mini)
+
+| Model Type | Accuracy |
+|------------|----------|
+| FP32       | 0.7031   |
+| Dynamic    | 0.7028   |
+| Static     | TBD      |
+
+---
+
+### Notes
+
+- Static quantization achieved **~75% size reduction**
+- All quantized models preserved **Top-1 prediction**
+- Static quantization requires a calibration dataset
+- Inference speed is hardware-dependent (minimal gain on CPU)
+
+
 ### Project Structure
 ```
 quantizer/
