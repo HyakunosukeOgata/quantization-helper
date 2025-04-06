@@ -5,12 +5,15 @@ import os
 import sys
 import torch
 from torchvision.models import resnet18, ResNet18_Weights
-
+from torchvision.datasets import ImageFolder
+from torchvision.transforms import transforms
+from torch.utils.data import DataLoader
 
 # 👉 Add project root to sys.path to allow correct import of quantizer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from quantizer.ptq import dynamic_quantize
+from quantizer.static import static_quantize
 
 
 def get_model_size(model, path="temp_model.pt"):
@@ -25,8 +28,10 @@ def get_model_size(model, path="temp_model.pt"):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--quant_type", type=str, default="dynamic", choices=["dynamic"],
-                        help="Quantization type. Currently supports 'dynamic' only.")
+    parser.add_argument("--quant_type", type=str, default="dynamic", choices=["dynamic", "static"],
+                        help="Quantization type. Choose 'dynamic' or 'static'.")
+    parser.add_argument("--calib_data", type=str, default=None,
+                        help="Path to calibration data folder (ImageFolder format). Required for static quant.")
     parser.add_argument("--save_path", type=str, default="quantized_model.pt",
                         help="Path to save the quantized model.")
     args = parser.parse_args()
@@ -41,11 +46,22 @@ def main():
 
     if args.quant_type == "dynamic":
         print("Performing dynamic quantization...")
-        print("Original fc layer:", model.fc)
         quantized_model = dynamic_quantize(model)
-        print("Quantized fc layer:", quantized_model.fc)
+
+    elif args.quant_type == "static":
+        if not args.calib_data:
+            raise ValueError("Static quantization requires --calib_data to be specified.")
+
+        print("Preparing calibration dataset...")
+        transform = weights.transforms()
+        dataset = ImageFolder(args.calib_data, transform=transform)
+        calib_loader = DataLoader(dataset, batch_size=32, shuffle=False)
+
+        print("Performing static quantization...")
+        quantized_model = static_quantize(model, calib_loader)
+
     else:
-        raise NotImplementedError(f"Quantization type not supported: {args.quant_type}")
+        raise NotImplementedError(f"Unsupported quantization type: {args.quant_type}")
 
     quantized_size = get_model_size(quantized_model)
     print(f"Quantized model size: {quantized_size:.2f} MB")
