@@ -23,7 +23,12 @@ A lightweight PyTorch model quantization tool that supports dynamic quantization
 pip install -r requirements.txt
 ```
 
-Run the Tests
+### (Optional) Install in editable mode
+```bash
+pip install -e .
+```
+
+### Run the Tests
 ```
 pytest -s tests/test_quant.py
 ```
@@ -36,7 +41,7 @@ python scripts/download_test_image.py
 ```
 This will save a sample image (used for prediction comparison) to tests/sample_cat.jpg.
 
-Sample Output
+### Sample Output
 ```
 Original model size: 46.84 MB
 Quantized model size: 45.30 MB
@@ -47,14 +52,14 @@ Prediction (FP32): 285
 Prediction (INT8): 285
 ```
 
-Accuracy Report (ImageNet Mini)
+### Accuracy Report (ImageNet Mini)
 ```
 FP32 Accuracy: 0.7031
 INT8 Accuracy: 0.7028
 Accuracy Drop: 0.0003
 ```
 
-Project Structure
+### Project Structure
 ```
 quantizer/
   ptq.py                 # Dynamic quantization logic
